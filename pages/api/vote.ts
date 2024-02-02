@@ -45,6 +45,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             // 將 Buffer 轉換為字符串
             // 假設 validatedMessage?.data 是已解析的 req.body 中的 data 對象
             const data = validatedMessage?.data
+            const userDataBody = validatedMessage?.data?.userDataBody
+            await kv.set('userDataBody', userDataBody);
+
 
             // 函數來處理並轉換 Buffer 對象
             const processBuffer=(obj: any)=> {
