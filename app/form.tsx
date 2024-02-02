@@ -78,15 +78,15 @@ export function PollCreateForm() {
                 // 如果有特定的方式識別投票人（例如email或userID），可以在這裡記錄
                 console.log("newPoll:", newPoll); // 假設 selectedOption 包含了用戶的選擇
             
-                formRef.current?.reset();
-                startTransition(async () => {
-                  mutate({
-                    newPoll,
-                    pending: true,
-                  });
+                // formRef.current?.reset();
+                // startTransition(async () => {
+                //   mutate({
+                //     newPoll,
+                //     pending: true,
+                //   });
 
-                  await savePoll(newPoll, formData);
-                });
+                //   await savePoll(newPoll, formData);
+                // });
               }}
           >
             <input
