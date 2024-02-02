@@ -44,19 +44,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             // kv.set('poll_data_details',JSON.stringify(JSON.parse(validatedMessage?.data?.toString())))
             // 將 Buffer 轉換為字符串
             // 假設 validatedMessage?.data 是已解析的 req.body 中的 data 對象
-            const data = validatedMessage?.data;
+            const data = validatedMessage?.data
 
             // 函數來處理並轉換 Buffer 對象
             const processBuffer=(obj: any)=> {
                 for (const key in obj) {
                     if (obj[key] && typeof obj[key] === 'object') {
-                    if (obj[key].type === 'Buffer' && Array.isArray(obj[key].data)) {
-                        // 將 Buffer 轉換為 UTF-8 字符串（或者根據你的需求轉換為其他格式）
-                        obj[key] = Buffer.from(obj[key].data).toString('utf-8');
-                    } else {
-                        // 遞歸處理嵌套對象
-                        processBuffer(obj[key]);
-                    }
+                        if (obj[key].type === 'Buffer' && Array.isArray(obj[key].data)) {
+                            // 將 Buffer 轉換為 UTF-8 字符串（或者根據你的需求轉換為其他格式）
+                            obj[key] = Buffer.from(obj[key].data).toString('utf-8');
+                        } else {
+                            // 遞歸處理嵌套對象
+                            processBuffer(obj[key]);
+                        }
                     }
                 }
             }
@@ -64,13 +64,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             // 檢查 data 是否存在並處理它
             if (data) {
                 processBuffer(data); // 處理 data 對象中的所有 Buffer
-            // 將處理後的對象轉換為 JSON 字符串並存儲
-                kv.set('poll_data_details', JSON.stringify(data));
+            
+                // 提取 frameActionBody 中的 castId 的 hash
+                const castIdHashData = data.frameActionBody?.castId?.hash?.data;
+                if (castIdHashData) {
+                    // 將數字數組轉換成 Buffer，然後轉換為十六進制字符串
+                    const hashHexString = Buffer.from(castIdHashData).toString('hex');
+            
+                    // 將 hashHexString 存儲到 Redis
+                    await kv.set('castId', hashHexString);
+                }
+            
+                // 將處理後的對象轉換為 JSON 字符串並存儲
+                await kv.set('poll_data_details', JSON.stringify(data));
             } else {
-            // 處理 data 為 undefined 的情況
-                kv.set('poll_data_details', '{}');
+                // 處理 data 為 undefined 的情況
+                await kv.set('poll_data_details', '{}');
             }
-
             // let testVar = validatedMessage?.data || ''
             // if(testVar!==undefined) {
                 // let poll_data_details_dataStr_buffer = Buffer.from(testVar).toString('utf-8');
