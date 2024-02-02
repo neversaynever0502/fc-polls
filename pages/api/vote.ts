@@ -41,7 +41,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const buttonId = validatedMessage?.data?.frameActionBody?.buttonIndex || 0;
             const fid = validatedMessage?.data?.fid || 0;
             // await fetch('https://')
-            kv.set('poll_data_details',JSON.stringify(JSON.parse(validatedMessage?.data?.toString()??'')))
+            // kv.set('poll_data_details',JSON.stringify(JSON.parse(validatedMessage?.data?.toString())))
+            // 將 Buffer 轉換為字符串
+            const dataStr = validatedMessage?.data?.toString();
+            kv.set('poll_data_details_dataStr', dataStr);
+
+
+
+            // 檢查 dataStr 是否為 undefined，如果是，則提供一個默認值或進行錯誤處理
+            if (dataStr !== undefined) {
+                const dataObj = JSON.parse(dataStr);  // 確保這是一個有效的 JSON 字符串
+                kv.set('poll_data_details', JSON.stringify(dataObj));
+            } else {
+                // 處理 dataStr 為 undefined 的情況，例如提供一個默認值或記錄一個錯誤
+                kv.set('poll_data_details', '{}'); // 或者其他錯誤處理
+            }
 
             // Use untrusted data for testing
             // const buttonId = req.body?.untrustedData?.buttonIndex || 0;
