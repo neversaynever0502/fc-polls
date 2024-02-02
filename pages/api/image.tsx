@@ -12,6 +12,7 @@ let fontData = fs.readFileSync(fontPath)
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
         const pollId = req.query['id']
+        const fid  = req.query['fid']
         // const fid = parseInt(req.query['fid']?.toString() || '')
         if (!pollId) {
             return res.status(400).send('Missing poll ID');
@@ -65,7 +66,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     flexDirection: 'column',
                     padding: 20,
                 }}>
-                    <h2 style={{textAlign: 'center', color: 'lightgray'}}>{poll.title}</h2>
+                    <h2 style={{textAlign: 'center', color: 'lightgray'}}>{poll.title} by {fid}</h2>
                     {
                         pollData.options.map((opt, index) => {
                             return (
