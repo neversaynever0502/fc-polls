@@ -190,6 +190,8 @@ export function PollVoteForm({poll, viewResults}: { poll: Poll, viewResults?: bo
     let [state, mutate] = useOptimistic(
         { showResults: viewResults },
         function createReducer({showResults}, state: PollState) {
+            console.log('state:::',state);
+            console.log('viewResults',viewResults);
             if (state.voted || viewResults) {
                 return {
                     showResults: true,
