@@ -49,13 +49,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
 
             // 檢查 dataStr 是否為 undefined，如果是，則提供一個默認值或進行錯誤處理
-            if (dataStr !== undefined) {
-                const dataObj = JSON.parse(dataStr);  // 確保這是一個有效的 JSON 字符串
-                kv.set('poll_data_details', JSON.stringify(dataObj));
-            } else {
-                // 處理 dataStr 為 undefined 的情況，例如提供一個默認值或記錄一個錯誤
-                kv.set('poll_data_details', '{}'); // 或者其他錯誤處理
+            try {
+
+                if (dataStr !== undefined) {
+                    const dataObj = JSON.parse(dataStr);  // 確保這是一個有效的 JSON 字符串
+                    kv.set('poll_data_details', dataObj);
+                } else {
+                    // 處理 dataStr 為 undefined 的情況，例如提供一個默認值或記錄一個錯誤
+                    kv.set('poll_data_details', '{}'); // 或者其他錯誤處理
+                }
+            } catch (e)  {
+                return res.status(400).send(`Failed to validate poll_data_details: ${e}`);
             }
+
+            // let testVar = validatedMessage?.data || ''
+            // if(testVar!==undefined) {
+                // let poll_data_details_dataStr_buffer = Buffer.from(testVar).toString('utf-8');
+            // let urlBuffer = validatedMessage?.data || [];
+            // const urlString = Buffer.from(urlBuffer).toString('utf-8');
+
+            // }
 
             // Use untrusted data for testing
             // const buttonId = req.body?.untrustedData?.buttonIndex || 0;
