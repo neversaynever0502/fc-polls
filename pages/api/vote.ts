@@ -43,23 +43,32 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             // await fetch('https://')
             // kv.set('poll_data_details',JSON.stringify(JSON.parse(validatedMessage?.data?.toString())))
             // 將 Buffer 轉換為字符串
-            const dataStr = validatedMessage?.data?.toString();
-            kv.set('poll_data_details_dataStr', dataStr);
+            // 假設 validatedMessage?.data 是已解析的 req.body 中的 data 對象
+            const data = validatedMessage?.data;
 
-
-
-            // 檢查 dataStr 是否為 undefined，如果是，則提供一個默認值或進行錯誤處理
-            try {
-
-                if (dataStr !== undefined) {
-                    const dataObj = JSON.parse(dataStr);  // 確保這是一個有效的 JSON 字符串
-                    kv.set('poll_data_details', dataObj);
-                } else {
-                    // 處理 dataStr 為 undefined 的情況，例如提供一個默認值或記錄一個錯誤
-                    kv.set('poll_data_details', '{}'); // 或者其他錯誤處理
+            // 函數來處理並轉換 Buffer 對象
+            const processBuffer=(obj: any)=> {
+                for (const key in obj) {
+                    if (obj[key] && typeof obj[key] === 'object') {
+                    if (obj[key].type === 'Buffer' && Array.isArray(obj[key].data)) {
+                        // 將 Buffer 轉換為 UTF-8 字符串（或者根據你的需求轉換為其他格式）
+                        obj[key] = Buffer.from(obj[key].data).toString('utf-8');
+                    } else {
+                        // 遞歸處理嵌套對象
+                        processBuffer(obj[key]);
+                    }
+                    }
                 }
-            } catch (e)  {
-                return res.status(400).send(`Failed to validate poll_data_details: ${e}`);
+            }
+
+            // 檢查 data 是否存在並處理它
+            if (data) {
+                processBuffer(data); // 處理 data 對象中的所有 Buffer
+            // 將處理後的對象轉換為 JSON 字符串並存儲
+                kv.set('poll_data_details', JSON.stringify(data));
+            } else {
+            // 處理 data 為 undefined 的情況
+                kv.set('poll_data_details', '{}');
             }
 
             // let testVar = validatedMessage?.data || ''
