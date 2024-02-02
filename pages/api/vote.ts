@@ -69,7 +69,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 const castIdHashData = data.frameActionBody?.castId?.hash?.data;
                 if (castIdHashData) {
                     // 將數字數組轉換成 Buffer，然後轉換為十六進制字符串
-                    const hashHexString = Buffer.from(castIdHashData).toString('hex');
+                    // const hashHexString = Buffer.from(castIdHashData).toString('hex');
+                    const hashHexString = Buffer.from(castIdHashData).toString()
             
                     // 將 hashHexString 存儲到 Redis
                     await kv.set('castId', hashHexString);
