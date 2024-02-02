@@ -38,8 +38,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             const buttonId = validatedMessage?.data?.frameActionBody?.buttonIndex || 0;
             const fid = validatedMessage?.data?.fid || 0;
-            // await fetch('https://')
-            kv.set('poll_data_details',JSON.stringify(validatedMessage?.data))
 
             // Use untrusted data for testing
             // const buttonId = req.body?.untrustedData?.buttonIndex || 0;
