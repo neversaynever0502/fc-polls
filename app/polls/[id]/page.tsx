@@ -5,6 +5,7 @@ import Head from "next/head";
 import {Metadata, ResolvingMetadata} from "next";
 
 async function getPoll(id: string): Promise<Poll> {
+    console.log(123,id)
     let nullPoll = {
         id: "",
         title: "No poll found",
@@ -22,6 +23,7 @@ async function getPoll(id: string): Promise<Poll> {
     try {
         let poll: Poll | null = await kv.hgetall(`poll:${id}`);
 
+        console.log('polls::',poll);
         if (!poll) {
             return nullPoll;
         }
