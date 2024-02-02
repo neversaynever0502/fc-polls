@@ -66,7 +66,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 processBuffer(data); // 處理 data 對象中的所有 Buffer
             
                 // 提取 frameActionBody 中的 castId 的 hash
-                const castIdHashData = data.frameActionBody?.castId?.hash?.data;
+                const castIdHashData = data.frameActionBody?.castId?.hash;
                 if (castIdHashData) {
                     // 將數字數組轉換成 Buffer，然後轉換為十六進制字符串
                     // const hashHexString = Buffer.from(castIdHashData).toString('hex');
